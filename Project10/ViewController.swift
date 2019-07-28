@@ -84,7 +84,7 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
         people.append(person)
         
         // reload view
-        
+        collectionView.reloadData()
         
         // call out the view controller
         dismiss(animated: true)
