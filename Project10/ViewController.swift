@@ -10,6 +10,8 @@ import UIKit
 
 class ViewController: UICollectionViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
+    var people = [Person]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -17,13 +19,33 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
     }
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return people.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Person", for: indexPath) as? PersonCell else {
             fatalError("Uable to dequeue PersonCell")
         }
+        
+        // get person from array
+        let person = people[indexPath.item]
+        
+        // set label text to match person name
+        cell.name.text = person.name
+        
+        // find person image somewhere in memory
+        let path = getDocumentDirectory().appendingPathComponent(person.image)
+        
+        // set founded image
+        cell.imageView.image = UIImage(contentsOfFile: path.path)
+        
+        // some customization of image
+        cell.imageView.layer.borderColor = UIColor(white: 0, alpha: 0.3).cgColor
+        cell.imageView.layer.borderWidth = 2
+        cell.imageView.layer.cornerRadius = 3
+        
+        // some fancy brush also on cell
+        cell.layer.cornerRadius = 7
         
         return cell
     }
@@ -57,6 +79,12 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
             // having valid jpeg data, write it to the disc
             try? jpegData.write(to: imagePath)
         }
+        
+        let person = Person(name: "Unknown", image: imageName)
+        people.append(person)
+        
+        // reload view
+        
         
         // call out the view controller
         dismiss(animated: true)
