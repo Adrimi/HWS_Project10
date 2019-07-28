@@ -91,6 +91,23 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
         
     }
     
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let person = people[indexPath.item]
+        
+        let ac = UIAlertController(title: "Rename", message: nil, preferredStyle: .alert)
+        ac.addTextField()
+        
+        ac.addAction(UIAlertAction(title: "Ok", style: .default) { [weak self, weak ac] _ in
+            guard let newName = ac?.textFields?[0].text else { return }
+            person.name = newName
+            self?.collectionView.reloadData()
+        })
+        
+        ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        present(ac, animated: true)
+    }
+    
     func getDocumentDirectory() -> URL {
         // default.urls asks for /documents directory, relative to the user's home directory.
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
