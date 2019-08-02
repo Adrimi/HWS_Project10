@@ -60,7 +60,6 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
         picker.delegate = self
         
         present(picker, animated: true)
-        
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
@@ -92,14 +91,42 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let person = people[indexPath.item]
+        let ac = UIAlertController(title: "What you want to do?", message: nil, preferredStyle: .alert)
         
+        ac.addAction(UIAlertAction(title: "Rename", style: .default) { [weak self] _ in
+            guard let person = self?.people[indexPath.item] else { return }
+            self?.renamePerson(person: person)
+        })
+        
+        ac.addAction(UIAlertAction(title: "Delete", style: .default) { [weak self] _ in
+            guard let person = self?.people[indexPath.item] else { return }
+            self?.deletePerson(person: person)
+        })
+        
+        present(ac, animated: true)
+    }
+
+    func renamePerson(person: Person) {
         let ac = UIAlertController(title: "Rename", message: nil, preferredStyle: .alert)
         ac.addTextField()
         
         ac.addAction(UIAlertAction(title: "Ok", style: .default) { [weak self, weak ac] _ in
             guard let newName = ac?.textFields?[0].text else { return }
             person.name = newName
+            self?.collectionView.reloadData()
+        })
+        
+        ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        
+        present(ac, animated: true)
+    }
+    
+    func deletePerson(person: Person) {
+        let ac = UIAlertController(title: "Delete", message: "Are you sure?", preferredStyle: .alert)
+        
+        ac.addAction(UIAlertAction(title: "Yes", style: .default) { [weak self] _ in
+            guard let indexOfPerson = self?.people.firstIndex(of: person) else { return }
+            self?.people.remove(at: indexOfPerson)
             self?.collectionView.reloadData()
         })
         
