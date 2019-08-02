@@ -51,7 +51,15 @@ class ViewController: UICollectionViewController, UIImagePickerControllerDelegat
     }
     
     @objc func addNewPerson() {
+        // instantiate picker
         let picker = UIImagePickerController()
+        
+        // check if device can take photo!
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            picker.sourceType = .camera
+        } else {
+            picker.sourceType = .photoLibrary
+        }
         
         // modifying picture to crop what I want
         picker.allowsEditing = true
